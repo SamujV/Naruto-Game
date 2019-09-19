@@ -11,7 +11,7 @@ public class Character {
 	private int score;
 	
 	
-	
+	// listas ---- ordenamiento por insercion 
 	
 	public Character(String name, String personality, String creationDate, int power, int score) {
 		super();
