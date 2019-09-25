@@ -15,12 +15,11 @@ public class Character {
 
 	// listas ---- ordenamiento por insercion 
 
-	public Character(String name, String personality, String creationDate, int power, int score) {
+	public Character(String name, String personality, String creationDate, int score) {
 		super();
 		this.name = name;
 		this.personality = personality;
 		this.creationDate = creationDate;
-		this.power = power;
 		this.score = score;
 	}
 
@@ -32,7 +31,7 @@ public class Character {
 			firstTech = t;
 		}else {
 			Technique sig = firstTech;
-			while(sig.getNextTech() != null) {
+			while(sig != null) {
 				sig = sig.getNextTech();
 			}
 			sig.setNextTech(t);
@@ -45,6 +44,10 @@ public class Character {
 //1 tipo de ordenamient 
 
 
+	}
+	
+	public void calculatePower() {
+		
 	}
 
 	public boolean existTechName(String name) {
@@ -69,6 +72,9 @@ public class Character {
 
 	public int getScore() {
 		return score;
+	}
+	public int getPower() {
+		return power;
 	}
 
 	public Character getnextChar() {

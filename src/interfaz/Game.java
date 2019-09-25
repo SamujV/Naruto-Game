@@ -1,49 +1,103 @@
-package interfaz;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
-import model.Clan;
-
-
-public class Game {	;
-
-	 Scanner i = new Scanner(System.in);
-	 Scanner s = new Scanner(System.in);
-	 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	package interfaz;
 	
-	 private Clan firstClan;
-	 
-	 public Game() throws IOException {
+	import java.io.BufferedReader;
+	import java.io.BufferedWriter;
+	import java.io.IOException;
+	import java.io.InputStreamReader;
+	import java.io.OutputStreamWriter;
+	import java.util.Scanner;
+	import model.Clan;
+	
+	
+	public class Game {	
+	
+	Scanner i = new Scanner(System.in);
+	Scanner s = new Scanner(System.in);
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	
+	private Clan firstClan;
+	
+	public Game()  {
 		System.out.println(showWelcome());
 		Menu();
-		
-
 	}
-
-
-
-
-	public void Menu() throws IOException {
-
+	
+	public void Menu() {
+	
 		int option = 0;
 	
 		while(option != 5) {
 			try {
 				System.out.println(showMenu());
-			option = Integer.parseInt(br.readLine());
+				option = Integer.parseInt(br.readLine());
 				Cases(option);
-
+	
 			}catch(NumberFormatException e) {
 				System.out.println(" Please insert the correct format \n");
+			}catch(IOException a) {
+				a.getMessage();
 			}
 		}
 	}
 	
+	public void Cases(int option) throws IOException {
+		switch (option){
+		case 1:
+			createClan();
+			break;
+		case 2:
+			createCharacter();
+			break;
+		case 3:
+			createTechnique();
+			break;
+		case 4:
+			break;
+		case 5:
+			bye();			
+			break;
+		default: errorNumber();
+	
+		}
+	}
+	public String showMenu() {
+		String message = "";
+		message += "What do you want to do? \n";
+		message += "1. Create Clan \n";
+		message += "2. Create Character \n";
+		message += "3. Create Technique \n";
+		message += "4. Use test data \n";
+		message += "5. Exit \n";
+		return message;
+	
+	}
+	
+	public void createClan() {
+		System.out.println(showClanMessage());
+	
+		String name = askClanData();	
+		addClan(name);
+	}
+	
+	public String askClanData() {
+		String name = "";
+		System.out.println("Please insert the clan's name");
+		try {
+			name = br.readLine();
+			while(existClanName(name) != null) {
+				System.out.println("Name it's not available, try again");
+				name = br.readLine();
+			}
+	
+		}catch(NumberFormatException e){
+			System.out.println(" Please insert the correct format \n");
+		}catch(IOException e) {
+			e.getMessage();
+		}
+	
+		return name;
+	}
 	
 	public void addClan(String name) {
 		Clan clan = new Clan(name);
@@ -54,81 +108,134 @@ public class Game {	;
 			while(sig.getNextClan() != null) {
 				sig = sig.getNextClan();
 			}
-			
+	
 			sig.setNextClan(clan);
 			clan.setPrevClan(sig);
-			
-			
+	
+	
 		}
-		
-		
+	
+	
 	}
-	public boolean existClanName(String name) {
-		boolean exist = false;
-		Clan sig = firstClan;
-		while(sig != null && !exist) {
-			
-			if(sig.getName().equals(name)) {
-				exist = true;
+	
+	
+	public void createCharacter() {
+		String nameClan = "";
+		System.out.println(showCharacterMessage() + "\n");
+		if(firstClan != null) {
+			try {
+				showClans();
+				System.out.println("Insert the name of the character's clan");
+				nameClan = br.readLine();
+				while(existClanName(nameClan) == null) {
+					System.out.println("There is no clan with that name, try again");
+					nameClan = br.readLine();
+				}
+				askCharacterData(nameClan);
+			}catch(NumberFormatException e) {
+				System.out.println("Please insert the correct format \n");
+			}catch(IOException d){
+				d.getMessage();
 			}
-			sig = sig.getNextClan();
-		}
-
-
-		return exist;
-
-	}
-
-	public String showMenu() {
-		String message = "";
-		message += "What do you want to do? \n";
-		message += "1. Create a Clan \n";
-		message += "2. Create a Character \n";
-		message += "3. Create a Technique \n";
-		message += "4. Use test data \n";
-		message += "5. Exit \n";
-		return message;
-
-	}
-
-	public void Cases(int option) throws IOException {
-		switch (option){
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			bye();			
-			break;
-		default: errorNumber();
-
+		}else {
+			System.out.println("Create a Clan first");
 		}
 	}
-
-
 	
-
+	public void askCharacterData(String nameC) {
+		Clan clan = existClanName(nameC);
+		String name, personality, creationD;
+		int score;
+		try {
+		System.out.println("Insert character's name ");
+		name = br.readLine();
+		while(clan.existCharacterName(name) == true) {
+			System.out.println("Name already taken, try again");
+			name = br.readLine();
+		}		
+		System.out.println("Insert personality ");
+		personality = br.readLine();
+		System.out.println("Insert creation date");
+		creationD = br.readLine();
+		score = Integer.parseInt(br.readLine());
+		
+		clan.addCharacter(name, personality, creationD, score);
+		
+		
+		}catch(NumberFormatException e) {
+			System.out.println("Please insert the correct format \n");
+		}catch(IOException a) {
+			a.getMessage();
+		}		
+	}
 	
-//	public void ShowClubList() {
-//
-//		try {
-//			for (int i = 1; i <= clubs.size(); i++) {
-//				System.out.println(i +". "+ clubs.get(i-1).getName());
-//			}
-//		}catch(NullPointerException e) {
-//			e.getMessage();
-//		}
-//	}
-
-
-
-
-
-
+	
+	public Clan existClanName(String name) {	
+		boolean existClan = false;
+		Clan sig = firstClan;
+		Clan exist = null;
+		if(sig != null) {
+			while(sig != null && !existClan) {
+					if(sig.getName().equalsIgnoreCase(name)) {
+					existClan = true;
+					exist = sig;
+				}
+				sig = sig.getNextClan();
+			}
+		}
+	return exist;
+	}
+	
+	public void createTechnique() {
+		System.out.println(showTechniqueMessage() + "\n");
+		String nameClan = "";
+		String nameChar = "";
+		if(firstClan != null && firstClan.getCharacter() != null) {
+			try {
+				System.out.println(showClans());
+				System.out.println("Insert the name of the character's clan");
+				nameClan = br.readLine();
+				while(existClanName(nameClan) == null) {
+					System.out.println("There is no clan with that name, try again");
+					nameClan = br.readLine();
+				}
+				System.out.println(showCharacters(nameClan));
+				System.out.println("Insert The name of the character \n");
+				nameChar = br.readLine();
+				while(existClanName(nameClan).existCharacterName(nameChar) != true) {
+					System.out.println("There is no character with that name, try again");
+					nameChar = br.readLine();
+				}
+				
+				
+			}catch(NumberFormatException e) {
+				System.out.println("Please insert the correct format \n");
+			}catch(IOException d){
+				d.getMessage();
+			}
+		}else {
+			System.out.println("Create a clan and a character first");
+		}		
+	}
+		
+	public String showClans() {
+		String names = "";
+		Clan sig = firstClan;
+		if(sig != null) {
+			while(sig != null) {
+				names += "- " + sig.getName() + "\n";
+				sig = sig.getNextClan();
+			}	
+		}
+		return names + "\n";
+	}
+	
+	public String showCharacters(String clanName) {
+		Clan clan = existClanName(clanName);
+		String names = clan.showCharacters();
+		return names + "\n";
+	}
+	
 	public String showWelcome() {
 		String message = "";
 		message += "=============================================================\n";
@@ -136,48 +243,36 @@ public class Game {	;
 		message += "=============================================================\n";
 		return message;
 	}
-
-	public String petType() {
+	public String showClanMessage() {
 		String message = "";
-		message += "Dog \n";
-		message += "Cat \n";
-		message += "Bird \n";
-		message += "Reptile \n";
-		message += "Fish \n";
-		message += "Invertebrate";
+		message += "=============================================================\n";
+		message += "======================= CREATE CLAN =========================\n";
+		message += "=============================================================\n";
 		return message;
 	}
-	public void showCreateClubMessage() {
+	public String showCharacterMessage() {
 		String message = "";
-		message += "=========================================================\n";
-		message += "====================   CREATE A CLUB   ==================\n";
-		message += "=========================================================\n";
-		System.out.println("" + message);
+		message += "=============================================================\n";
+		message += "====================== CREATE CHARACTER =====================\n";
+		message += "=============================================================\n";
+		return message;
 	}
-	public void showCreateOwnerMessage() {
+	public String showTechniqueMessage() {
 		String message = "";
-		message += "=========================================================\n";
-		message += "====================   CREATE AN OWNER   =================\n";
-		message += "=========================================================\n";
-		System.out.println("" + message);
+		message += "=============================================================\n";
+		message += "===================== CREATE TECHNIQUE ======================\n";
+		message += "=============================================================\n";
+		return message;
 	}
-	public void showCreatePetMessage() {
-		String message = "";
-		message += "=========================================================\n";
-		message += "====================   CREATE A PET   ==================\n";
-		message += "=========================================================\n";
-		System.out.println("" + message);
-	}
-
-
+	
 	public void bye() {
 		System.out.println("Thanks for using the program");
 	}
 	public void errorNumber() {
-
+	
 		System.out.println(" Ups... this is not an option");
 	}
-
-
-
-}
+	
+	
+	
+	}
